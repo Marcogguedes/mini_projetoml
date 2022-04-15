@@ -1,8 +1,8 @@
 ########## Prevendo a Inadimplência de Clientes com Machine Learning ##########
-#																			  #
-#																			  #
-#																			  #
-#																		      #																			
+#																			  
+#																			  
+#																			  
+#																		      																			
 ###############################################################################
 
 # Instalando os pacotes para o projeto
@@ -234,3 +234,18 @@ recall <- sensitivity(y_pred_v1, y)
 recall
 
 F1 <- (2 * precision * recall) / (precision + recall)
+F1	
+
+# Balanceamento de Classe
+install.packges("DMwr")
+library(DMwR)
+?SMOTE
+
+# Aplicando SMOTE - SMOTE: Synthetic Minority Over-Sampling Tecnique
+# https://arxiv.org/pdf/1106.1813.pdf
+table(dados_treino$Inadimplente)
+prop.table(table(dados_treino$Inadimplente))
+set.seed(9560)
+dados_treino_bal <- SMOTE(Inadimplente ~ ., data = dados_treino)
+table(dados_treino_bal$Inadimplente)
+pro.table(table(dados_treino_bal$Inadimplente))
