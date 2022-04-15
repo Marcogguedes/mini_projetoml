@@ -195,4 +195,42 @@ melt_compara_dados
 # Plot para visualizar a distribuição do treinamento vs original
 ggplot(melt_compara_dados, aes(x = X1, y = value))+
 	geom_bar(aes(fill = X2), stat = "identity", position = "dodge")+
-	theme(axis.text.x = element_text(angle = 90, hjust = 1))	
+	theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Tudo o que não está no dataset de treinamento está no dataset de teste. Observe o sinal - (menos)
+dados_teste <- dados_clientes[-indice,]
+dim(dados_teste)
+dim(dados_treino)
+
+
+#####################################################################
+
+#################### Modelo de Machine Learning #####################
+
+# Constuindo a primeira versão do modelo
+?randomForest
+modelo_v1 <- randomForest(Inadimplente ~ ., data = dados_treino)
+modelo_v1
+
+# Avaliando o modelo
+plot(modelo_v1)
+
+# Previsões com dados de teste
+previsoes_v1 <- predict(modelo_v1, dados_teste)
+
+# Confusion Matrix
+?caret::confusionMatrix
+cm_v1 <- caret::confusionMatrix(previsoes_v1, dados_teste$Inadimplente, positive = "1")
+cm_v1
+
+# Calculando Precision, Recall e F1-Score, métricas de avaliação do modelo preditivo
+y <- dados_teste$Inadimplente
+y_pred_v1 <- previsoes_v1
+
+precision <- posPredValue(y_pred_v1, y)
+precision
+
+recall <- sensitivity(y_pred_v1, y)
+recall
+
+F1 <- (2 * precision * recall) / (precision + recall)
